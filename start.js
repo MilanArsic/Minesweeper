@@ -27,7 +27,7 @@ function draw(){
     background(0);
     for (var i=0; i<cols; i++){
         for (var j=0; j<rows; j++){
-            Grid[i][j]=show();
+            Grid[i][j].show();
         }
     }
 }
