@@ -27,7 +27,7 @@ function setup() {
 }
 }
 }
-function mouse() {
+function mousePressed() {
   for (var i = 0; i < cols; i++) {
     for (var j = 0; j < rows; j++) {
       if (grid[i][j].contains(mouseX, mouseY))
