@@ -9,7 +9,7 @@ function Cell(i,j,w) {
   this.mine = false;
   this.revealed = false;
 
-  this.flagged = true;
+  this.flag = false;
 }
 
 Cell.prototype.show = function() {
@@ -20,15 +20,18 @@ Cell.prototype.show = function() {
     if(this.mine){
       fill (100);
       ellipse(this.x + this.w * 0.5, this.y + this.w * 0.5, this.w * 0.5);
-       } else{
-        fill (200);
-        rect(this.x, this.y, this.w, this.w);
-        if (this.aroundCount > 0) {
+       } else if (this.aroundCount > 0) {
         textAlign(CENTER);
         fill(0);
         text(this.aroundCount, this.x + this.w * 0.5, this.y + this.w-5);
        }
+       else{
+        fill (200);
+        rect(this.x, this.y, this.w, this.w);
 }
+   } else if (this.flag) {
+    image(flagImg, this.x, this.y);
+    
    }
 };
 
@@ -79,4 +82,11 @@ Cell.prototype.fill = function(){
     }
       }
    }
-};
+}
+Cell.prototype.toggleFlag = function() {
+    this.flag = this.flag ? false : true;
+  }
+
+  Cell.prototype.isMine = function(x, y) {
+    return this.mine;
+  };
