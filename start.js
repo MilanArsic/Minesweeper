@@ -1,5 +1,4 @@
- 
-function makeArray(cols, rows){
+ function makeArray(cols, rows){
     var arr = new Array(cols);
   for (var i=0; i < arr.length; i++){
     arr[i]= new Array(rows);
@@ -14,10 +13,17 @@ var w = 20;
 
 var totalMines = 20 ;
 
+var mines = [];
+var flagImg;
+
+function preload() {
+  flagImg = loadImage('flag.png');
+}
 function setup() {
   createCanvas(201, 201);
   cols = floor(width / w);
   rows = floor(height / w);
+  console.log(flagImg);
   grid = makeArray (cols, rows);
   for (var i=0; i < cols; i++) {
     for (var j=0; j < rows; j++){
@@ -51,31 +57,42 @@ function setup() {
 function gameOver() {
   for (var i=0; i < cols; i++) {
     for (var j=0; j < rows; j++){
-       grid[i][j].reveal = true;
+       grid[i][j].reveal();
     }
   }
 }
 function mousePressed() {
-  for (var i = 0; i < cols; i++) {
-    for (var j = 0; j < rows; j++) {
-      if (grid[i][j].contains(mouseX, mouseY)){
-      grid[i][j].reveal();
-
-      if (grid[i][j].mine){
-        gameOver();
+    if(mouseButton === 'right') {
+        for(let i = 0; i < cols; i++) {
+          for(let j = 0; j < rows; j++) {
+            let cell = grid[i][j];
+            if(cell.contains(mouseX, mouseY)) {
+              cell.toggleFlag();       
+            }
+          }    
+        }
+      } else {
+        for(let i = 0; i < cols; i++) {
+          for(let j = 0; j < rows; j++) {
+            let cell = grid[i][j];
+            if(cell.contains(mouseX, mouseY)) {
+              if(cell.isMine()) {
+                gameOver();
+              } else {
+                cell.reveal();
+              }        
+            }
+          }    
+        }
       }
     }
-  }
-}
-}
 
  
 function draw() {
   background(255);
   for (var i=0; i < cols; i++){
     for (var j=0; j < rows; j++){
-        grid [i][j].show();
+        grid[i][j].show();
     }
   }
 }
-
