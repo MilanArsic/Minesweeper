@@ -16,20 +16,28 @@ Cell.prototype.show = function() {
   stroke(0);
   noFill();
   rect(this.x, this.y, this.w, this.w);
+/* If this field is revealed
+	 then a mine is shown,
+	 if it's not, show a number on field */
    if(this.revealed){
     if(this.mine){
       fill (100);
       ellipse(this.x + this.w * 0.5, this.y + this.w * 0.5, this.w * 0.5);
-       } else if (this.aroundCount > 0) {
+       } 
+       // NOT a Mine
+       else if (this.aroundCount > 0) {
         textAlign(CENTER);
         fill(0);
         text(this.aroundCount, this.x + this.w * 0.5, this.y + this.w-5);
        }
+       // NOT flagged
        else{
         fill (200);
         rect(this.x, this.y, this.w, this.w);
 }
-   } else if (this.flag) {
+   } 
+   // NOT revealed
+   else if (this.flag) {
     image(flagImg, this.x, this.y);
     
    }
