@@ -1,4 +1,7 @@
- function makeArray(cols, rows){
+ //Mineswepper by Milan Arsic
+
+//2D Array
+function makeArray(cols, rows){
     var arr = new Array(cols);
   for (var i=0; i < arr.length; i++){
     arr[i]= new Array(rows);
@@ -31,19 +34,22 @@ function setup() {
     }
   }
 
+  // Pick totalMines spots 
+  // Fill options with all the possible spots
    var options = [];
    for (var i = 0; i < cols; i++) {
     for (var j = 0; j < rows; j++) {
       options.push([i, j]);
     }
    }
+   // Choose random spot (totalMines), and remove it from options
 
   for (var n = 0; n < totalMines; n++){
     var index = floor(random(options.length));
     var choice = options[index];
     var i = choice[0];
     var j = choice[1];
-    options.splice(index, 1);
+    options.splice(index, 1); //Delete the spot
     grid[i][j].mine = true;
   }
    
@@ -89,10 +95,13 @@ function mousePressed() {
 
  
 function draw() {
+  //Sets background color
   background(255);
+  //Shows all cells in the grid
   for (var i=0; i < cols; i++){
     for (var j=0; j < rows; j++){
         grid[i][j].show();
     }
   }
 }
+
