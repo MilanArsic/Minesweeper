@@ -1,99 +1,121 @@
-function Cell(column, row, width, height) {
-  this.column = column;
-  this.row = row;
-  this.width = width;
-  this.height = height;
  
-  this.aroundCount = 0;
-
-  this.mine = false;
-  this.revealed = false;
-
-  this.flag = false;
-}
-
-Cell.prototype.show = function() {
-  stroke(0);
-  noFill();
-  rect(this.column, this.row, this.width, this.height);
-   if(this.revealed){
-    if(this.mine){
-      fill (100);
-      ellipse(this.column + this.width * 0.5, this.row + this.height * 0.5, this.width * 0.5, this.height * 0.5);
-       } else if (this.aroundCount > 0) {
-        textAlign(CENTER);
-        fill(0);
-        text(this.aroundCount, this.column + this.width * 0.5, this.row + this.height-5);
-       }
-       else{
-        fill (200);
-        rect(this.column, this.row, this.width, this.height);
-}
-   } else if (this.flag) {
-    image(flagImg, this.column, this.row);
-    
-   }
-};
-*/
-
-/*Cell.prototype.countMines = function() {
-  if (this.mine){
-    this.aroundCount = -1;
-    return;
+function makeArray(cols, rows){
+    var arr = new Array(cols);
+  for (var column=0; column < arr.length; column++){
+    arr[column]= new Array(rows);
   }
-  var total = 0;
+  return arr;
+}
 
-  //This will cause a problem if element or neighbour is outside the created grid
-  //use the xoff and yoff
-  for (var xoff = -1; xoff <= 1; xoff++) {
-       var i = this.i + xoff;
-       if (i < 0 || i >= cols) continue;
+var grid =[];
+var maxCols;
+var maxRows;
 
-  for (var yoff = -1; yoff <= 1; yoff++) {
-      var j = this.j + yoff;
-      if (j < 0 || j >= rows) continue;
+var totalMines;
 
-      var around = grid[i][j];
-      if (around.mine) {
-        total++;
-      }
+var mines = [];
+var flagImg;
+
+function preload() {
+  flagImg = loadImage('https://i.imgur.com/A0y5C3L.png');
+}
+
+function setup() { 
+  createCanvas(201, 201);
+  maxCols = 20;
+  maxRows = 20;
+  totalMines = 20;
+  console.log(flagImg);
+  grid = makeArray (maxCols, maxRows);
+  for (var column=0; column < maxCols; column++) {
+    for (var row=0;  row< maxRows; row++){
+        grid[column][row] = new Cell(column,row,width,height);
     }
   }
-  
-  this.aroundCount = total; 
-};
-*/
-
-Cell.prototype.contains = function(column, row){
-  return (column > this.column && x < this.column + this.width && row > this.row && y < this.row + this.height);
-}; 
-Cell.prototype.reveal = function(){
-  this.revealed = true;
-  if (this.aroundCount == 0) {
-    this.fill();
-  }
 }
-/*Cell.prototype.fill = function(){
-  for (var xoff = -1; xoff <= 1; xoff++) {
-    for (var yoff = -1; yoff <= 1; yoff++) {
-    var i = this.i + xoff;
-   var j = this.j + yoff;
-   if (i > -1 && i < cols && j > -1 && j < rows){
-
-      var around = grid[i][j];
-      if (!around.mine && !around.revealed ) {
-        around.reveal();
-      }
+  /* var options = [];
+   for (let cell of grid) { 
+      options.push([i, j]);
     }
-      }
    }
+*/
+/*
+  for (var n = 0; n < totalMines; n++){
+    var index = floor(random(options.length));
+    var choice = options[index];
+    var i = choice[0];
+    var j = choice[1];
+    options.splice(index, 1);
+    grid[i][j].mine = true;
+  }
+   
+ for (let cell of grid) {
+        cell.countMines();
+}
+}
 }
 */
-Cell.prototype.toggleFlag = function() {
-    this.flag = this.flag ? false : true;
+
+
+
+function mousePressed(mouseX,mouseY) {
+  if (mouseButton === 'left') {
+      grid[mouseX][mouseY].reveal();
   }
 
-  Cell.prototype.isMine = function() {
-    return this.mine;
+  else if (mouseButton === 'right') {
+      grid[mouseX][mouseY].toggleFlag();
+  }
+}
 
-  };
+
+
+Cell.prototype.reveal = function()
+{
+if (this.revealed)
+{
+  return;
+}
+
+if (this.flag)
+{
+  return;
+}
+
+this.revealed = true;
+
+if (this.mine)
+{
+  gameOver();
+  return;
+}
+
+if (this.aroundCount == 0)
+{
+  this.fill();
+}
+}
+
+ 
+function draw() {
+  background(255);
+  for (let cell of grid){
+            cell.show();
+    }
+  }
+
+function gameOver() {
+  for (let cell of grid) {
+    cell.reveal();
+  }
+  console.log("You lose!");
+}
+
+function checkGame() {
+  for (let cell of grid) {    
+    if (!cell.revealed && !cell.mine) {
+      return;
+    }
+  }
+  console.log("You win!");
+}
