@@ -1,9 +1,9 @@
-function Cell(i,j,w) {
-  this.i = i;
-  this.j = j;
-  this.x = i * w;
-  this.y = j * w;
-  this.w = w;
+function Cell(column, row, width, height) {
+  this.column = column;
+  this.row = row;
+  this.width = width;
+  this.height = height;
+ 
   this.aroundCount = 0;
 
   this.mine = false;
@@ -15,40 +15,36 @@ function Cell(i,j,w) {
 Cell.prototype.show = function() {
   stroke(0);
   noFill();
-  rect(this.x, this.y, this.w, this.w);
-/* If this field is revealed
-	 then a mine is shown,
-	 if it's not, show a number on field */
+  rect(this.column, this.row, this.width, this.height);
    if(this.revealed){
     if(this.mine){
       fill (100);
-      ellipse(this.x + this.w * 0.5, this.y + this.w * 0.5, this.w * 0.5);
-       } 
-       // NOT a Mine
-       else if (this.aroundCount > 0) {
+      ellipse(this.column + this.width * 0.5, this.row + this.height * 0.5, this.width * 0.5, this.height * 0.5);
+       } else if (this.aroundCount > 0) {
         textAlign(CENTER);
         fill(0);
-        text(this.aroundCount, this.x + this.w * 0.5, this.y + this.w-5);
+        text(this.aroundCount, this.column + this.width * 0.5, this.row + this.height-5);
        }
-       // NOT flagged
        else{
         fill (200);
-        rect(this.x, this.y, this.w, this.w);
+        rect(this.column, this.row, this.width, this.height);
 }
-   } 
-   // NOT revealed
-   else if (this.flag) {
-    image(flagImg, this.x, this.y);
+   } else if (this.flag) {
+    image(flagImg, this.column, this.row);
     
    }
 };
+*/
 
-Cell.prototype.countMines = function() {
+/*Cell.prototype.countMines = function() {
   if (this.mine){
     this.aroundCount = -1;
     return;
   }
   var total = 0;
+
+  //This will cause a problem if element or neighbour is outside the created grid
+  //use the xoff and yoff
   for (var xoff = -1; xoff <= 1; xoff++) {
        var i = this.i + xoff;
        if (i < 0 || i >= cols) continue;
@@ -66,9 +62,10 @@ Cell.prototype.countMines = function() {
   
   this.aroundCount = total; 
 };
+*/
 
-Cell.prototype.contains = function(x, y){
-  return (x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.w);
+Cell.prototype.contains = function(column, row){
+  return (column > this.column && x < this.column + this.width && row > this.row && y < this.row + this.height);
 }; 
 Cell.prototype.reveal = function(){
   this.revealed = true;
@@ -76,7 +73,7 @@ Cell.prototype.reveal = function(){
     this.fill();
   }
 }
-Cell.prototype.fill = function(){
+/*Cell.prototype.fill = function(){
   for (var xoff = -1; xoff <= 1; xoff++) {
     for (var yoff = -1; yoff <= 1; yoff++) {
     var i = this.i + xoff;
@@ -91,10 +88,12 @@ Cell.prototype.fill = function(){
       }
    }
 }
+*/
 Cell.prototype.toggleFlag = function() {
     this.flag = this.flag ? false : true;
   }
 
-  Cell.prototype.isMine = function(x, y) {
+  Cell.prototype.isMine = function() {
     return this.mine;
+
   };
