@@ -1,107 +1,99 @@
- //Mineswepper by Milan Arsic
+function Cell(column, row, width, height) {
+  this.column = column;
+  this.row = row;
+  this.width = width;
+  this.height = height;
+ 
+  this.aroundCount = 0;
 
-//2D Array
-function makeArray(cols, rows){
-    var arr = new Array(cols);
-  for (var i=0; i < arr.length; i++){
-    arr[i]= new Array(rows);
-  }
-  return arr;
+  this.mine = false;
+  this.revealed = false;
+
+  this.flag = false;
 }
 
-var grid;
-var cols;
-var rows;
-var w = 20;
-
-var totalMines = 20 ;
-
-var mines = [];
-var flagImg;
-
-function preload() {
-  flagImg = loadImage('flag.png');
+Cell.prototype.show = function() {
+  stroke(0);
+  noFill();
+  rect(this.column, this.row, this.width, this.height);
+   if(this.revealed){
+    if(this.mine){
+      fill (100);
+      ellipse(this.column + this.width * 0.5, this.row + this.height * 0.5, this.width * 0.5, this.height * 0.5);
+       } else if (this.aroundCount > 0) {
+        textAlign(CENTER);
+        fill(0);
+        text(this.aroundCount, this.column + this.width * 0.5, this.row + this.height-5);
+       }
+       else{
+        fill (200);
+        rect(this.column, this.row, this.width, this.height);
 }
-function setup() {
-  createCanvas(201, 201);
-  cols = floor(width / w);
-  rows = floor(height / w);
-  console.log(flagImg);
-  grid = makeArray (cols, rows);
-  for (var i=0; i < cols; i++) {
-    for (var j=0; j < rows; j++){
-        grid[i][j] = new Cell(i, j, w);
-    }
-  }
-
-  // Pick totalMines spots 
-  // Fill options with all the possible spots
-   var options = [];
-   for (var i = 0; i < cols; i++) {
-    for (var j = 0; j < rows; j++) {
-      options.push([i, j]);
-    }
+   } else if (this.flag) {
+    image(flagImg, this.column, this.row);
+    
    }
-   // Choose random spot (totalMines), and remove it from options
+};
+*/
 
-  for (var n = 0; n < totalMines; n++){
-    var index = floor(random(options.length));
-    var choice = options[index];
-    var i = choice[0];
-    var j = choice[1];
-    options.splice(index, 1); //Delete the spot
-    grid[i][j].mine = true;
+/*Cell.prototype.countMines = function() {
+  if (this.mine){
+    this.aroundCount = -1;
+    return;
   }
-   
-  for (var i=0; i < cols; i++) {
-     for (var j=0; j < rows; j++){
-        grid[i][j].countMines();
-}
-}
-}
+  var total = 0;
 
-function gameOver() {
-  for (var i=0; i < cols; i++) {
-    for (var j=0; j < rows; j++){
-       grid[i][j].reveal();
-    }
-  }
-}
-function mousePressed() {
-    if(mouseButton === 'right') {
-        for(let i = 0; i < cols; i++) {
-          for(let j = 0; j < rows; j++) {
-            let cell = grid[i][j];
-            if(cell.contains(mouseX, mouseY)) {
-              cell.toggleFlag();       
-            }
-          }    
-        }
-      } else {
-        for(let i = 0; i < cols; i++) {
-          for(let j = 0; j < rows; j++) {
-            let cell = grid[i][j];
-            if(cell.contains(mouseX, mouseY)) {
-              if(cell.isMine()) {
-                gameOver();
-              } else {
-                cell.reveal();
-              }        
-            }
-          }    
-        }
+  //This will cause a problem if element or neighbour is outside the created grid
+  //use the xoff and yoff
+  for (var xoff = -1; xoff <= 1; xoff++) {
+       var i = this.i + xoff;
+       if (i < 0 || i >= cols) continue;
+
+  for (var yoff = -1; yoff <= 1; yoff++) {
+      var j = this.j + yoff;
+      if (j < 0 || j >= rows) continue;
+
+      var around = grid[i][j];
+      if (around.mine) {
+        total++;
       }
     }
+  }
+  
+  this.aroundCount = total; 
+};
+*/
 
- 
-function draw() {
-  //Sets background color
-  background(255);
-  //Shows all cells in the grid
-  for (var i=0; i < cols; i++){
-    for (var j=0; j < rows; j++){
-        grid[i][j].show();
-    }
+Cell.prototype.contains = function(column, row){
+  return (column > this.column && x < this.column + this.width && row > this.row && y < this.row + this.height);
+}; 
+Cell.prototype.reveal = function(){
+  this.revealed = true;
+  if (this.aroundCount == 0) {
+    this.fill();
   }
 }
+/*Cell.prototype.fill = function(){
+  for (var xoff = -1; xoff <= 1; xoff++) {
+    for (var yoff = -1; yoff <= 1; yoff++) {
+    var i = this.i + xoff;
+   var j = this.j + yoff;
+   if (i > -1 && i < cols && j > -1 && j < rows){
 
+      var around = grid[i][j];
+      if (!around.mine && !around.revealed ) {
+        around.reveal();
+      }
+    }
+      }
+   }
+}
+*/
+Cell.prototype.toggleFlag = function() {
+    this.flag = this.flag ? false : true;
+  }
+
+  Cell.prototype.isMine = function() {
+    return this.mine;
+
+  };
