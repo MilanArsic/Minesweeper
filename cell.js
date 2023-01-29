@@ -16,69 +16,94 @@ Cell.prototype.show = function() {
   stroke(0);
   noFill();
   rect(this.column, this.row, this.width, this.height);
-   if(this.revealed){
-    if(this.mine){
-      fill (100);
-      ellipse(this.column + this.width * 0.5, this.row + this.height * 0.5, this.width * 0.5, this.height * 0.5);
-       } else if (this.aroundCount > 0) {
-        textAlign(CENTER);
-        fill(0);
-        text(this.aroundCount, this.column + this.width * 0.5, this.row + this.height-5);
-       }
-       else{
-        fill (200);
-        rect(this.column, this.row, this.width, this.height);
-}
-   } else if (this.flag) {
-    image(flagImg, this.column, this.row);
-    
-   }
-};
-*/
 
-/*Cell.prototype.countMines = function() {
-  if (this.mine){
-    this.aroundCount = -1;
+  if (this.flag) {
+    image(flagImg, this.column, this.row);
     return;
   }
-  var total = 0;
 
-  //This will cause a problem if element or neighbour is outside the created grid
-  //use the xoff and yoff
-  for (var xoff = -1; xoff <= 1; xoff++) {
-       var i = this.i + xoff;
-       if (i < 0 || i >= cols) continue;
+  if (!this.revealed) {
+    return;
+  }
 
-  for (var yoff = -1; yoff <= 1; yoff++) {
-      var j = this.j + yoff;
-      if (j < 0 || j >= rows) continue;
+  if (this.mine) {
+    fill (100);
+    ellipse(this.column + this.width * 0.5, this.row + this.height * 0.5, this.width * 0.5, this.height * 0.5);
+    checkGame();
 
-      var around = grid[i][j];
-      if (around.mine) {
-        total++;
+    return;
+  }
+
+  if (this.aroundCount != 0) {
+    textAlign(CENTER);
+    fill(0);
+    text(this.aroundCount, this.column + this.width * 0.5, this.row + this.height-5);
+    checkGame();
+
+    return;
+  }
+
+  // it is just empty field
+  fill (200);
+  rect(this.column, this.row, this.width, this.height);
+  checkGame();
+}
+
+Cell.prototype.countMines = function() {
+  if (this.mine) {
+    return;
+  }
+
+  for (var columnOffset = -1; columnOffset <= 1; columnOffset++) {
+       var column = this.column + columnOffset;
+       if (column < 0 || column >= maxCols) continue;
+  for (var rowOffset = -1; rowOffset <= 1; rowOffset++) {
+      var row = this.row + rowOffset;
+      if (row < 0 || j >= maxRows) continue;
+      var neighbourCell = grid[i][j];
+      if (neighbourCell.mine) {
+        this.aroundCount++;
       }
     }
   }
-  
-  this.aroundCount = total; 
 };
-*/
 
 Cell.prototype.contains = function(column, row){
   return (column > this.column && x < this.column + this.width && row > this.row && y < this.row + this.height);
 }; 
-Cell.prototype.reveal = function(){
-  this.revealed = true;
-  if (this.aroundCount == 0) {
-    this.fill();
-  }
+
+Cell.prototype.reveal = function()
+{
+if (this.revealed)
+{
+  return;
 }
+
+if (this.flag)
+{
+  return;
+}
+
+this.revealed = true;
+
+if (this.mine)
+{
+  gameOver();
+  return;
+}
+
+if (this.aroundCount == 0)
+{
+  this.fill();
+}
+}
+
 /*Cell.prototype.fill = function(){
-  for (var xoff = -1; xoff <= 1; xoff++) {
-    for (var yoff = -1; yoff <= 1; yoff++) {
-    var i = this.i + xoff;
-   var j = this.j + yoff;
-   if (i > -1 && i < cols && j > -1 && j < rows){
+  for (var columnOffset = -1; columnOffset <= 1; columnOffset++) {
+    for (var rowOffset = -1; rowOffset <= 1; rowOffset++) {
+    var column = this.column + columnOffset;
+   var row = this.row + rowOffset;
+   if (column > -1 && column < maxCols && row > -1 && j < maxRows){
 
       var around = grid[i][j];
       if (!around.mine && !around.revealed ) {
