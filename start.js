@@ -1,4 +1,4 @@
- 
+  
 function makeArray(cols, rows){
     var arr = new Array(cols);
   for (var column=0; column < arr.length; column++){
@@ -104,18 +104,18 @@ function draw() {
     }
   }
 
-function gameOver() {
-  for (let cell of grid) {
-    cell.reveal();
-  }
-  console.log("You lose!");
-}
-
-function checkGame() {
-  for (let cell of grid) {    
-    if (!cell.revealed && !cell.mine) {
-      return;
+  function gameOver() {
+    for (let cell of grid) {
+      cell.reveal();
     }
+    console.log("You lose!");
   }
-  console.log("You win!");
-}
+  
+  function checkGame() {
+    for (let cell of grid) {
+      if (!cell.revealed && !cell.mine) {
+        return;
+      }
+    }
+    console.log("You win!");
+  }
